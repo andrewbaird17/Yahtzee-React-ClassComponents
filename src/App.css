@@ -1,3 +1,54 @@
+body {
+	background-color: lightcyan;
+}
+
 .App {
 	text-align: center;
+}
+
+.row {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.main {
+	flex: 80%;
+}
+
+.scorecard {
+	flex: 20%;
+	align-items: center;
+}
+
+table,
+td,
+th {
+	border: 1px solid;
+	border-collapse: collapse;
+}
+
+.roll-button {
+	background-color: hsl(200, 100%, 50%);
+	color: white;
+	padding: 0.5em 1em;
+	border-radius: 0.3rem;
+	border: none;
+	cursor: pointer;
+}
+
+.roll-again {
+	justify-content: center;
+	align-items: center;
+	background-color: lightcoral;
+	font-size: 15px;
+	font-weight: bolder;
+	padding: 0 1.5rem;
+	margin: 0.5rem;
+	border-radius: 50px;
+}
+
+.dice-set {
+	margin: 1rem;
+	display: inline-block;
+	margin-left: 10px;
 }
