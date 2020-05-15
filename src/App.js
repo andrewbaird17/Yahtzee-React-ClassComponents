@@ -33,8 +33,14 @@ class App extends Component {
 					hold: false,
 				},
 			],
+			roll: 0,
 		};
 		this.handleStart = this.handleStart.bind(this);
+		this.handleRoll = this.handleRoll.bind(this);
+	}
+
+	componentDidMount() {
+		console.log(this.state.diceSet);
 	}
 
 	handleStart(event) {
@@ -42,6 +48,28 @@ class App extends Component {
 		this.setState({
 			start: !this.state.start,
 		});
+	}
+
+	handleRoll(event) {
+		event.preventDefault();
+		if (this.state.roll === 3) {
+			this.setState({
+				roll: 1,
+			});
+		} else {
+			this.setState({
+				roll: this.state.roll + 1,
+				diceSet: this.state.diceSet.map((die) => {
+					console.log(die);
+					if (die.hold === true) {
+						return (die.value = Math.floor(Math.random() * 6) + 1);
+					} else {
+						return die.value;
+					}
+				}),
+			});
+		}
+		console.log(this.state.diceSet);
 	}
 
 	render() {
@@ -54,6 +82,12 @@ class App extends Component {
 				<div className="row">
 					<div className="main">
 						<DiceSet dice={this.state.diceSet} />
+						<div className="roll-again">
+							<h2>Current Roll: {this.state.roll} </h2>
+							<button className="roll-button" onClick={this.handleRoll}>
+								Roll Again
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
