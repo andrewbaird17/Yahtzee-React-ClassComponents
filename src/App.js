@@ -43,6 +43,11 @@ class App extends Component {
 		console.log(this.state.diceSet);
 	}
 
+	componentDidUpdate(prevProps) {
+		if (this.props.diceSet !== prevProps.diceSet) {
+		}
+	}
+
 	handleStart(event) {
 		event.preventDefault();
 		this.setState({
@@ -59,12 +64,12 @@ class App extends Component {
 		} else {
 			this.setState({
 				roll: this.state.roll + 1,
-				diceSet: this.state.diceSet.map((die) => {
+				diceSet: this.state.diceSet.map((die, index) => {
 					console.log(die);
 					if (die.hold === true) {
-						return (die.value = Math.floor(Math.random() * 6) + 1);
-					} else {
 						return die.value;
+					} else {
+						return (die.value = Math.floor(Math.random() * 6) + 1);
 					}
 				}),
 			});
@@ -97,8 +102,8 @@ class App extends Component {
 
 const DiceSet = (props) => (
 	<div>
-		{props.dice.map((die) => (
-			<Die key={die.id} {...die} />
+		{props.dice.map((die, index) => (
+			<Die key={index} {...die} />
 		))}
 	</div>
 );
@@ -120,6 +125,7 @@ class Die extends Component {
 			value: this.props.value,
 			hold: this.props.hold,
 		});
+		console.log(this.props);
 	}
 
 	handleClick(event) {
