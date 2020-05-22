@@ -37,6 +37,7 @@ class App extends Component {
 		};
 		this.handleStart = this.handleStart.bind(this);
 		this.handleRoll = this.handleRoll.bind(this);
+		this.handleDieClick = this.handleDieClick.bind(this);
 	}
 
 	componentDidMount() {
@@ -77,6 +78,21 @@ class App extends Component {
 		console.log(this.state.diceSet);
 	}
 
+	handleDieClick(id, hold) {
+
+		const selectedDie = this.state.diceSet.find(item => item.id === id);
+
+
+
+		//TODO: here you will update the state object for this item. You can figure out the index and go from there.
+
+
+
+		console.log('it worked')
+		console.log(selectedDie)
+
+	}
+
 	render() {
 		return (
 			<div className="App">
@@ -86,7 +102,7 @@ class App extends Component {
 				</button>
 				<div className="row">
 					<div className="main">
-						<DiceSet dice={this.state.diceSet} />
+						<DiceSet dice={this.state.diceSet} handleClick={this.handleDieClick} />
 						<div className="roll-again">
 							<h2>Current Roll: {this.state.roll} </h2>
 							<button className="roll-button" onClick={this.handleRoll}>
@@ -101,9 +117,12 @@ class App extends Component {
 }
 
 const DiceSet = (props) => (
+
+
+
 	<div>
 		{props.dice.map((die, index) => (
-			<Die key={index} {...die} />
+			<Die key={index} {...die} handleClick={props.handleClick} />
 		))}
 	</div>
 );
@@ -130,9 +149,17 @@ class Die extends Component {
 
 	handleClick(event) {
 		event.preventDefault();
+
+
+		this.props.handleClick(
+			this.state.id,
+			!this.state.hold
+		);
+
 		this.setState({
 			hold: !this.state.hold,
 		});
+
 	}
 
 	render() {
