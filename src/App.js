@@ -56,6 +56,14 @@ class App extends Component {
 		});
 	}
 
+	changeValue(die) {
+		// changle value based on id and hold status
+		console.log(die);
+		if (die.hold !== true) {
+			die.value = Math.floor(Math.random() * 6) + 1;
+		}
+	}
+
 	handleRoll(event) {
 		event.preventDefault();
 		if (this.state.roll === 3) {
@@ -63,34 +71,26 @@ class App extends Component {
 				roll: 1,
 			});
 		} else {
+			// fix this so the diceSet is not set to an array of just values
 			this.setState({
 				roll: this.state.roll + 1,
-				diceSet: this.state.diceSet.map((die, index) => {
-					console.log(die);
-					if (die.hold === true) {
-						return die.value;
-					} else {
-						return (die.value = Math.floor(Math.random() * 6) + 1);
-					}
-				}),
+			});
+			this.state.diceSet.map((die) => {
+				this.changeValue(die);
 			});
 		}
 		console.log(this.state.diceSet);
 	}
 
 	handleDieClick(id, hold) {
-
-		const selectedDie = this.state.diceSet.find(item => item.id === id);
-
-
+		const selectedDie = this.state.diceSet.find((item) => item.id === id);
 
 		//TODO: here you will update the state object for this item. You can figure out the index and go from there.
 
+		selectedDie.hold = hold;
 
-
-		console.log('it worked')
-		console.log(selectedDie)
-
+		console.log('it worked');
+		console.log(selectedDie);
 	}
 
 	render() {
@@ -102,7 +102,10 @@ class App extends Component {
 				</button>
 				<div className="row">
 					<div className="main">
-						<DiceSet dice={this.state.diceSet} handleClick={this.handleDieClick} />
+						<DiceSet
+							dice={this.state.diceSet}
+							handleClick={this.handleDieClick}
+						/>
 						<div className="roll-again">
 							<h2>Current Roll: {this.state.roll} </h2>
 							<button className="roll-button" onClick={this.handleRoll}>
@@ -117,9 +120,6 @@ class App extends Component {
 }
 
 const DiceSet = (props) => (
-
-
-
 	<div>
 		{props.dice.map((die, index) => (
 			<Die key={index} {...die} handleClick={props.handleClick} />
@@ -150,16 +150,11 @@ class Die extends Component {
 	handleClick(event) {
 		event.preventDefault();
 
-
-		this.props.handleClick(
-			this.state.id,
-			!this.state.hold
-		);
+		this.props.handleClick(this.state.id, !this.state.hold);
 
 		this.setState({
 			hold: !this.state.hold,
 		});
-
 	}
 
 	render() {
