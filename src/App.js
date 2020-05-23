@@ -66,8 +66,9 @@ class App extends Component {
 
 	handleRoll(event) {
 		event.preventDefault();
-		if (this.state.roll === 3) {
+		if (this.state.roll >= 3) {
 			this.setState({
+				// need to choose score on scorecard
 				roll: 1,
 			});
 		} else {
@@ -83,11 +84,15 @@ class App extends Component {
 	}
 
 	handleDieClick(id, hold) {
-		const selectedDie = this.state.diceSet.find((item) => item.id === id);
+		const selectedDie = this.state.diceSet.findIndex((item) => item.id === id);
 
 		//TODO: here you will update the state object for this item. You can figure out the index and go from there.
-
-		selectedDie.hold = hold;
+		let changedDice = [...this.state.diceSet];
+		changedDice[selectedDie] = { ...changedDice[selectedDie], hold: hold };
+		this.setState({
+			diceSet: changedDice,
+		});
+		//selectedDie.hold = hold;
 
 		console.log('it worked');
 		console.log(selectedDie);
