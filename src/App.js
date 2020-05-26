@@ -44,12 +44,9 @@ class App extends Component {
 		console.log(this.state.diceSet);
 	}
 
-	componentDidUpdate(prevProps) {
-		if (this.props.diceSet !== prevProps.diceSet) {
-		}
-	}
-
 	handleStart(event) {
+		// instead of having start as a state, maybe reveal "the board" and dice when it is clicked
+		// once clicked the button disappears then
 		event.preventDefault();
 		this.setState({
 			start: !this.state.start,
@@ -69,7 +66,7 @@ class App extends Component {
 		if (this.state.roll >= 3) {
 			this.setState({
 				// need to choose score on scorecard
-				roll: 1,
+				roll: 0,
 			});
 		} else {
 			// fix this so the diceSet is not set to an array of just values
@@ -92,10 +89,9 @@ class App extends Component {
 		this.setState({
 			diceSet: changedDice,
 		});
-		//selectedDie.hold = hold;
 
-		console.log('it worked');
-		console.log(selectedDie);
+		//console.log('it worked');
+		//console.log(selectedDie);
 	}
 
 	render() {
@@ -135,31 +131,13 @@ const DiceSet = (props) => (
 class Die extends Component {
 	constructor(props) {
 		super(props);
-		/* this.state = {
-			id: null,
-			value: null,
-			hold: false,
-		}; */
 		this.handleClick = this.handleClick.bind(this);
 	}
-
-	/* componentDidMount() {
-		this.setState({
-			id: this.props.id,
-			value: this.props.value,
-			hold: this.props.hold,
-		});
-		console.log(this.props);
-	} */
 
 	handleClick(event) {
 		event.preventDefault();
 
 		this.props.handleClick(this.props.id, !this.props.hold);
-
-		/* this.setState({
-			hold: !this.state.hold,
-		}); */
 	}
 
 	render() {
