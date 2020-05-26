@@ -135,41 +135,41 @@ const DiceSet = (props) => (
 class Die extends Component {
 	constructor(props) {
 		super(props);
-		this.state = {
+		/* this.state = {
 			id: null,
 			value: null,
 			hold: false,
-		};
+		}; */
 		this.handleClick = this.handleClick.bind(this);
 	}
 
-	componentDidMount() {
+	/* componentDidMount() {
 		this.setState({
 			id: this.props.id,
 			value: this.props.value,
 			hold: this.props.hold,
 		});
 		console.log(this.props);
-	}
+	} */
 
 	handleClick(event) {
 		event.preventDefault();
 
-		this.props.handleClick(this.state.id, !this.state.hold);
+		this.props.handleClick(this.props.id, !this.props.hold);
 
-		this.setState({
+		/* this.setState({
 			hold: !this.state.hold,
-		});
+		}); */
 	}
 
 	render() {
 		return (
 			<div className="dice-set">
 				<div className="die-appearance">
-					<h1>{this.state.value}</h1>
+					<h1>{this.props.value}</h1>
 				</div>
-				<div className={`die ${this.state.hold ? 'hold' : ''}`}>
-					<h3>{this.state.hold ? 'Held' : ''}</h3>
+				<div className={`die ${this.props.hold ? 'hold' : ''}`}>
+					<h3>{this.props.hold ? 'Held' : ''}</h3>
 				</div>
 				<button onClick={this.handleClick}>Change Hold Status</button>
 			</div>
