@@ -5,6 +5,7 @@ class App extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			scored: false,
 			start: false,
 			diceSet: [
 				{
@@ -38,6 +39,7 @@ class App extends Component {
 		this.handleStart = this.handleStart.bind(this);
 		this.handleRoll = this.handleRoll.bind(this);
 		this.handleDieClick = this.handleDieClick.bind(this);
+		this.score = this.score.bind(this);
 	}
 
 	componentDidMount() {
@@ -64,12 +66,11 @@ class App extends Component {
 	handleRoll(event) {
 		event.preventDefault();
 		if (this.state.roll >= 3) {
+			// need to choose score on scorecard if reach this point
 			this.setState({
-				// need to choose score on scorecard
 				roll: 0,
 			});
 		} else {
-			// fix this so the diceSet is not set to an array of just values
 			this.setState({
 				roll: this.state.roll + 1,
 			});
@@ -94,6 +95,11 @@ class App extends Component {
 		//console.log(selectedDie);
 	}
 
+	score(event, targetId) {
+		event.preventDefault();
+		console.log('scorecard clicked');
+	}
+
 	render() {
 		return (
 			<div className="App">
@@ -113,6 +119,79 @@ class App extends Component {
 								Roll Again
 							</button>
 						</div>
+					</div>
+					<div className="scorecard">
+						<h4>Scorecard</h4>
+						<table>
+							<thead>
+								<tr>
+									<th>Item to Score</th>
+									<th>Score</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>One's</td>
+									<td className="scoreCell" id="ones" onClick={this.score}>
+										...
+									</td>
+								</tr>
+								<tr>
+									<td>Two's</td>
+									<td id="twos">0</td>
+								</tr>
+								<tr>
+									<td>Three's</td>
+									<td id="threes"></td>
+								</tr>
+								<tr>
+									<td>Four's</td>
+									<td id="fours"></td>
+								</tr>
+								<tr>
+									<td>Five's</td>
+									<td id="fives"></td>
+								</tr>
+								<tr>
+									<td>Six's</td>
+									<td id="sixes"></td>
+								</tr>
+								<tr>
+									<td>Three of a Kind</td>
+									<td id="threeOfAKind"></td>
+								</tr>
+								<tr>
+									<td>Four of a Kind</td>
+									<td id="fourOfAKind"></td>
+								</tr>
+								<tr>
+									<td>Full House</td>
+									<td id="fullHouse"></td>
+								</tr>
+								<tr>
+									<td>Small Straight</td>
+									<td id="smallStraight"></td>
+								</tr>
+								<tr>
+									<td>Large Straight</td>
+									<td id="largeStraight"></td>
+								</tr>
+								<tr>
+									<td>Chance</td>
+									<td id="chance"></td>
+								</tr>
+								<tr>
+									<td>Yahtzee</td>
+									<td id="yahtzee"></td>
+								</tr>
+							</tbody>
+							<tfoot>
+								<tr>
+									<td>Total Points</td>
+									<td id="total"></td>
+								</tr>
+							</tfoot>
+						</table>
 					</div>
 				</div>
 			</div>
