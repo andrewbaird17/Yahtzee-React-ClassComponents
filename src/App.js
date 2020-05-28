@@ -95,10 +95,18 @@ class App extends Component {
 		//console.log(selectedDie);
 	}
 
-	score(event, targetId) {
+	score = (event, targetValue) => {
 		event.preventDefault();
+		console.log(targetValue);
+		let newScore = 0;
 		console.log('scorecard clicked');
-	}
+		this.state.diceSet.forEach((element) => {
+			if (element.value === targetValue) {
+				newScore += targetValue;
+			}
+		});
+		console.log(newScore);
+	};
 
 	render() {
 		return (
@@ -132,63 +140,74 @@ class App extends Component {
 							<tbody>
 								<tr>
 									<td>One's</td>
-									<td className="scoreCell" id="ones" onClick={this.score}>
+									<td
+										className="scoreCell"
+										id="ones"
+										onClick={(event) => this.score(event, 1)}
+									>
 										...
 									</td>
 								</tr>
 								<tr>
 									<td>Two's</td>
-									<td id="twos">0</td>
+									<td
+										className="scoreCell"
+										id="twos"
+										onClick={this.score}
+										value={2}
+									>
+										...
+									</td>
 								</tr>
 								<tr>
 									<td>Three's</td>
-									<td id="threes"></td>
+									<td className="scoreCell" id="threes"></td>
 								</tr>
 								<tr>
 									<td>Four's</td>
-									<td id="fours"></td>
+									<td className="scoreCell" id="fours"></td>
 								</tr>
 								<tr>
 									<td>Five's</td>
-									<td id="fives"></td>
+									<td className="scoreCell" id="fives"></td>
 								</tr>
 								<tr>
 									<td>Six's</td>
-									<td id="sixes"></td>
+									<td className="scoreCell" id="sixes"></td>
 								</tr>
 								<tr>
 									<td>Three of a Kind</td>
-									<td id="threeOfAKind"></td>
+									<td className="scoreCell" id="threeOfAKind"></td>
 								</tr>
 								<tr>
 									<td>Four of a Kind</td>
-									<td id="fourOfAKind"></td>
+									<td className="scoreCell" id="fourOfAKind"></td>
 								</tr>
 								<tr>
 									<td>Full House</td>
-									<td id="fullHouse"></td>
+									<td className="scoreCell" id="fullHouse"></td>
 								</tr>
 								<tr>
 									<td>Small Straight</td>
-									<td id="smallStraight"></td>
+									<td className="scoreCell" id="smallStraight"></td>
 								</tr>
 								<tr>
 									<td>Large Straight</td>
-									<td id="largeStraight"></td>
+									<td className="scoreCell" id="largeStraight"></td>
 								</tr>
 								<tr>
 									<td>Chance</td>
-									<td id="chance"></td>
+									<td className="scoreCell" id="chance"></td>
 								</tr>
 								<tr>
 									<td>Yahtzee</td>
-									<td id="yahtzee"></td>
+									<td className="scoreCell" id="yahtzee"></td>
 								</tr>
 							</tbody>
 							<tfoot>
 								<tr>
 									<td>Total Points</td>
-									<td id="total"></td>
+									<td className="scoreCell" id="total"></td>
 								</tr>
 							</tfoot>
 						</table>
