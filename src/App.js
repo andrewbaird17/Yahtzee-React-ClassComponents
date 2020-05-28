@@ -39,12 +39,12 @@ class App extends Component {
 		this.handleStart = this.handleStart.bind(this);
 		this.handleRoll = this.handleRoll.bind(this);
 		this.handleDieClick = this.handleDieClick.bind(this);
-		this.score = this.score.bind(this);
+		this.calculateSinglesScore = this.calculateSinglesScore.bind(this);
 	}
 
-	componentDidMount() {
+	/* 	componentDidMount() {
 		console.log(this.state.diceSet);
-	}
+	} */
 
 	handleStart(event) {
 		// instead of having start as a state, maybe reveal "the board" and dice when it is clicked
@@ -63,12 +63,18 @@ class App extends Component {
 		}
 	}
 
+	resetDiceSetHold(die) {
+		die.hold = false;
+	}
 	handleRoll(event) {
 		event.preventDefault();
 		if (this.state.roll >= 3) {
 			// need to choose score on scorecard if reach this point
 			this.setState({
 				roll: 0,
+			});
+			this.state.diceSet.map((die) => {
+				this.resetDiceSetHold(die);
 			});
 		} else {
 			this.setState({
@@ -95,17 +101,18 @@ class App extends Component {
 		//console.log(selectedDie);
 	}
 
-	score = (event, targetValue) => {
+	calculateSinglesScore = (event, targetValue, id) => {
 		event.preventDefault();
 		console.log(targetValue);
 		let newScore = 0;
-		console.log('scorecard clicked');
+		//console.log('scorecard clicked');
 		this.state.diceSet.forEach((element) => {
 			if (element.value === targetValue) {
 				newScore += targetValue;
 			}
 		});
 		console.log(newScore);
+		// send newScore and html id to a different function to update table
 	};
 
 	render() {
@@ -143,7 +150,9 @@ class App extends Component {
 									<td
 										className="scoreCell"
 										id="ones"
-										onClick={(event) => this.score(event, 1)}
+										onClick={(event) =>
+											this.calculateSinglesScore(event, 1, 'ones')
+										}
 									>
 										...
 									</td>
@@ -153,7 +162,7 @@ class App extends Component {
 									<td
 										className="scoreCell"
 										id="twos"
-										onClick={(event) => this.score(event, 2)}
+										onClick={(event) => this.calculateSinglesScore(event, 2)}
 									>
 										...
 									</td>
@@ -163,7 +172,7 @@ class App extends Component {
 									<td
 										className="scoreCell"
 										id="threes"
-										onClick={(event) => this.score(event, 3)}
+										onClick={(event) => this.calculateSinglesScore(event, 3)}
 									>
 										...
 									</td>
@@ -173,7 +182,7 @@ class App extends Component {
 									<td
 										className="scoreCell"
 										id="fours"
-										onClick={(event) => this.score(event, 4)}
+										onClick={(event) => this.calculateSinglesScore(event, 4)}
 									>
 										...
 									</td>
@@ -183,7 +192,7 @@ class App extends Component {
 									<td
 										className="scoreCell"
 										id="fives"
-										onClick={(event) => this.score(event, 5)}
+										onClick={(event) => this.calculateSinglesScore(event, 5)}
 									>
 										...
 									</td>
@@ -193,7 +202,7 @@ class App extends Component {
 									<td
 										className="scoreCell"
 										id="sixes"
-										onClick={(event) => this.score(event, 6)}
+										onClick={(event) => this.calculateSinglesScore(event, 6)}
 									>
 										...
 									</td>
