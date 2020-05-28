@@ -7,6 +7,7 @@ class App extends Component {
 		this.state = {
 			scored: false,
 			start: false,
+			roll: 0,
 			diceSet: [
 				{
 					id: 1,
@@ -34,7 +35,23 @@ class App extends Component {
 					hold: false,
 				},
 			],
-			roll: 0,
+			scoresheet: [
+				{ id: 'ones', score: 0, scored: false },
+				{ id: 'twos', score: 0, scored: false },
+				{ id: 'threes', score: 0, scored: false },
+				{ id: 'fours', score: 0, scored: false },
+				{ id: 'fives', score: 0, scored: false },
+				{ id: 'sixes', score: 0, scored: false },
+				{ id: 'ones', score: 0, scored: false },
+				{ id: 'threeOfAKind', score: 0, scored: false },
+				{ id: 'fourOfAKind', score: 0, scored: false },
+				{ id: 'fullHouse', score: 0, scored: false },
+				{ id: 'smallStraight', score: 0, scored: false },
+				{ id: 'largeStraight', score: 0, scored: false },
+				{ id: 'yahtzee', score: 0, scored: false },
+				{ id: 'upperScore', score: 0, scored: false },
+				{ id: 'total', score: 0, scored: false },
+			],
 		};
 		this.handleStart = this.handleStart.bind(this);
 		this.handleRoll = this.handleRoll.bind(this);
