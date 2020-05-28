@@ -153,27 +153,50 @@ class App extends Component {
 									<td
 										className="scoreCell"
 										id="twos"
-										onClick={this.score}
-										value={2}
+										onClick={(event) => this.score(event, 2)}
 									>
 										...
 									</td>
 								</tr>
 								<tr>
 									<td>Three's</td>
-									<td className="scoreCell" id="threes"></td>
+									<td
+										className="scoreCell"
+										id="threes"
+										onClick={(event) => this.score(event, 3)}
+									>
+										...
+									</td>
 								</tr>
 								<tr>
 									<td>Four's</td>
-									<td className="scoreCell" id="fours"></td>
+									<td
+										className="scoreCell"
+										id="fours"
+										onClick={(event) => this.score(event, 4)}
+									>
+										...
+									</td>
 								</tr>
 								<tr>
 									<td>Five's</td>
-									<td className="scoreCell" id="fives"></td>
+									<td
+										className="scoreCell"
+										id="fives"
+										onClick={(event) => this.score(event, 5)}
+									>
+										...
+									</td>
 								</tr>
 								<tr>
 									<td>Six's</td>
-									<td className="scoreCell" id="sixes"></td>
+									<td
+										className="scoreCell"
+										id="sixes"
+										onClick={(event) => this.score(event, 6)}
+									>
+										...
+									</td>
 								</tr>
 								<tr>
 									<td>Three of a Kind</td>
