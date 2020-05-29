@@ -36,20 +36,20 @@ class App extends Component {
 				},
 			],
 			scoresheet: [
-				{ id: 'ones', score: 0, targetValue: 1, scored: false },
-				{ id: 'twos', score: 0, targetValue: 2, scored: false },
-				{ id: 'threes', score: 0, targetValue: 3, scored: false },
-				{ id: 'fours', score: 0, targetValue: 4, scored: false },
-				{ id: 'fives', score: 0, targetValue: 5, scored: false },
-				{ id: 'sixes', score: 0, targetValue: 6, scored: false },
-				{ id: 'threeOfAKind', score: 0, scored: false },
-				{ id: 'fourOfAKind', score: 0, scored: false },
-				{ id: 'fullHouse', score: 0, scored: false },
-				{ id: 'smallStraight', score: 0, scored: false },
-				{ id: 'largeStraight', score: 0, scored: false },
-				{ id: 'yahtzee', score: 0, scored: false },
-				{ id: 'upperScore', score: 0, scored: false },
-				{ id: 'total', score: 0, scored: false },
+				{ id: 'Ones', score: 0, targetValue: 1, scored: false },
+				{ id: 'Twos', score: 0, targetValue: 2, scored: false },
+				{ id: 'Threes', score: 0, targetValue: 3, scored: false },
+				{ id: 'Fours', score: 0, targetValue: 4, scored: false },
+				{ id: 'Fives', score: 0, targetValue: 5, scored: false },
+				{ id: 'Sixes', score: 0, targetValue: 6, scored: false },
+				{ id: 'Three Of A Kind', score: 0, scored: false },
+				{ id: 'Four Of A Kind', score: 0, scored: false },
+				{ id: 'Full House', score: 0, scored: false },
+				{ id: 'Small Straight', score: 0, scored: false },
+				{ id: 'Large Straight', score: 0, scored: false },
+				{ id: 'Yahtzee', score: 0, scored: false },
+				{ id: 'Upper Score', score: 0, scored: false },
+				{ id: 'Total', score: 0, scored: false },
 			],
 		};
 		this.handleStart = this.handleStart.bind(this);
@@ -58,10 +58,6 @@ class App extends Component {
 		this.calculateSinglesScore = this.calculateSinglesScore.bind(this);
 		this.saveScore = this.saveScore.bind(this);
 	}
-
-	/* 	componentDidMount() {
-		console.log(this.state.diceSet);
-	} */
 
 	handleStart(event) {
 		// instead of having start as a state, maybe reveal "the board" and dice when it is clicked
@@ -87,10 +83,12 @@ class App extends Component {
 	handleRoll(event) {
 		event.preventDefault();
 		if (this.state.roll >= 3) {
-			// need to choose score on scorecard if reach this point
 			this.setState({
 				roll: 0,
 			});
+
+			// need to choose score on scorecard if reach this point, should not be able to roll again until a scoring area is chosen
+
 			this.state.diceSet.map((die) => {
 				this.resetDiceSetHold(die);
 			});
