@@ -15,21 +15,13 @@ body {
 	flex: 80%;
 }
 
+.center-text {
+	text-align: center;
+}
+
 .scorecard {
-	flex: 20%;
-	align-items: center;
-}
-
-.scoreCell {
-	cursor: pointer;
-}
-
-table,
-td,
-th {
-	border: 1px solid;
-	border-collapse: collapse;
-	padding: 10px;
+	border-style: solid;
+	border-radius: 0.5rem;
 }
 
 .roll-button {
@@ -53,6 +45,12 @@ th {
 }
 
 .dice-set {
+	margin: 1rem;
+	display: inline-block;
+	margin-left: 10px;
+}
+
+.score-set {
 	margin: 1rem;
 	display: inline-block;
 	margin-left: 10px;

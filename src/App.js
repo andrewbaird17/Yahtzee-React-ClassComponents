@@ -36,13 +36,12 @@ class App extends Component {
 				},
 			],
 			scoresheet: [
-				{ id: 'ones', score: 0, scored: false },
-				{ id: 'twos', score: 0, scored: false },
-				{ id: 'threes', score: 0, scored: false },
-				{ id: 'fours', score: 0, scored: false },
-				{ id: 'fives', score: 0, scored: false },
-				{ id: 'sixes', score: 0, scored: false },
-				{ id: 'ones', score: 0, scored: false },
+				{ id: 'ones', score: 0, targetValue: 1, scored: false },
+				{ id: 'twos', score: 0, targetValue: 2, scored: false },
+				{ id: 'threes', score: 0, targetValue: 3, scored: false },
+				{ id: 'fours', score: 0, targetValue: 4, scored: false },
+				{ id: 'fives', score: 0, targetValue: 5, scored: false },
+				{ id: 'sixes', score: 0, targetValue: 6, scored: false },
 				{ id: 'threeOfAKind', score: 0, scored: false },
 				{ id: 'fourOfAKind', score: 0, scored: false },
 				{ id: 'fullHouse', score: 0, scored: false },
@@ -57,6 +56,7 @@ class App extends Component {
 		this.handleRoll = this.handleRoll.bind(this);
 		this.handleDieClick = this.handleDieClick.bind(this);
 		this.calculateSinglesScore = this.calculateSinglesScore.bind(this);
+		this.saveScore = this.saveScore.bind(this);
 	}
 
 	/* 	componentDidMount() {
@@ -83,6 +83,7 @@ class App extends Component {
 	resetDiceSetHold(die) {
 		die.hold = false;
 	}
+
 	handleRoll(event) {
 		event.preventDefault();
 		if (this.state.roll >= 3) {
@@ -130,7 +131,26 @@ class App extends Component {
 		});
 		console.log(newScore);
 		// send newScore and html id to a different function to update table
+		this.saveScore(id, newScore);
 	};
+
+	saveScore(id, newScore) {
+		const selectedScore = this.state.scoresheet.findIndex(
+			(item) => item.id === id
+		);
+
+		let changedScore = [...this.state.scoresheet];
+		if (changedScore[selectedScore].scored === false) {
+			changedScore[selectedScore] = {
+				...changedScore[selectedScore],
+				score: newScore,
+				scored: true,
+			};
+			this.setState({
+				scoresheet: changedScore,
+			});
+		}
+	}
 
 	render() {
 		return (
@@ -152,116 +172,54 @@ class App extends Component {
 							</button>
 						</div>
 					</div>
-					<div className="scorecard">
-						<h4>Scorecard</h4>
-						<table>
-							<thead>
-								<tr>
-									<th>Item to Score</th>
-									<th>Score</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>One's</td>
-									<td
-										className="scoreCell"
-										id="ones"
-										onClick={(event) =>
-											this.calculateSinglesScore(event, 1, 'ones')
-										}
-									>
-										...
-									</td>
-								</tr>
-								<tr>
-									<td>Two's</td>
-									<td
-										className="scoreCell"
-										id="twos"
-										onClick={(event) => this.calculateSinglesScore(event, 2)}
-									>
-										...
-									</td>
-								</tr>
-								<tr>
-									<td>Three's</td>
-									<td
-										className="scoreCell"
-										id="threes"
-										onClick={(event) => this.calculateSinglesScore(event, 3)}
-									>
-										...
-									</td>
-								</tr>
-								<tr>
-									<td>Four's</td>
-									<td
-										className="scoreCell"
-										id="fours"
-										onClick={(event) => this.calculateSinglesScore(event, 4)}
-									>
-										...
-									</td>
-								</tr>
-								<tr>
-									<td>Five's</td>
-									<td
-										className="scoreCell"
-										id="fives"
-										onClick={(event) => this.calculateSinglesScore(event, 5)}
-									>
-										...
-									</td>
-								</tr>
-								<tr>
-									<td>Six's</td>
-									<td
-										className="scoreCell"
-										id="sixes"
-										onClick={(event) => this.calculateSinglesScore(event, 6)}
-									>
-										...
-									</td>
-								</tr>
-								<tr>
-									<td>Three of a Kind</td>
-									<td className="scoreCell" id="threeOfAKind"></td>
-								</tr>
-								<tr>
-									<td>Four of a Kind</td>
-									<td className="scoreCell" id="fourOfAKind"></td>
-								</tr>
-								<tr>
-									<td>Full House</td>
-									<td className="scoreCell" id="fullHouse"></td>
-								</tr>
-								<tr>
-									<td>Small Straight</td>
-									<td className="scoreCell" id="smallStraight"></td>
-								</tr>
-								<tr>
-									<td>Large Straight</td>
-									<td className="scoreCell" id="largeStraight"></td>
-								</tr>
-								<tr>
-									<td>Chance</td>
-									<td className="scoreCell" id="chance"></td>
-								</tr>
-								<tr>
-									<td>Yahtzee</td>
-									<td className="scoreCell" id="yahtzee"></td>
-								</tr>
-							</tbody>
-							<tfoot>
-								<tr>
-									<td>Total Points</td>
-									<td className="scoreCell" id="total"></td>
-								</tr>
-							</tfoot>
-						</table>
-					</div>
 				</div>
+				<div className="scorecard">
+					<h1 className="center-text">Scorecard 2.0</h1>
+					<ScoreSheet
+						scoresheet={this.state.scoresheet}
+						handleScore={this.calculateSinglesScore}
+					/>
+				</div>
+			</div>
+		);
+	}
+}
+
+const ScoreSheet = (props) => (
+	<div>
+		{props.scoresheet.map((el) => (
+			<Cell key={el.id} {...el} handleScore={props.handleScore} />
+		))}
+	</div>
+);
+
+class Cell extends Component {
+	constructor(props) {
+		super(props);
+		this.handleScore = this.handleScore.bind(this);
+	}
+
+	handleScore(event) {
+		event.preventDefault();
+
+		this.props.handleScore(event, this.props.targetValue, this.props.id);
+	}
+
+	render() {
+		return (
+			<div className="score-set">
+				<h3>{this.props.id}</h3>
+				<h4>{this.props.score}</h4>
+				<button className="btn" onClick={this.handleScore}>
+					Set Score
+				</button>
+				<input
+					type="checkbox"
+					id="scoredbox"
+					readOnly
+					checked={this.props.scored}
+				/>
+				<label htmlFor="scoredbox">Scored?</label>
 			</div>
 		);
 	}
