@@ -57,6 +57,7 @@ class App extends Component {
 		this.handleDieClick = this.handleDieClick.bind(this);
 		this.calculateSinglesScore = this.calculateSinglesScore.bind(this);
 		this.saveScore = this.saveScore.bind(this);
+		this.resetDiceAndRoll = this.resetDiceAndRoll.bind(this);
 	}
 
 	handleStart(event) {
@@ -103,6 +104,15 @@ class App extends Component {
 		console.log(this.state.diceSet);
 	}
 
+	resetDiceAndRoll() {
+		this.setState({
+			roll: 0,
+		});
+		this.state.diceSet.map((die) => {
+			this.resetDiceSetHold(die);
+		});
+	}
+
 	handleDieClick(id, hold) {
 		const selectedDie = this.state.diceSet.findIndex((item) => item.id === id);
 
@@ -130,6 +140,7 @@ class App extends Component {
 		console.log(newScore);
 		// send newScore and html id to a different function to update table
 		this.saveScore(id, newScore);
+		this.resetDiceAndRoll();
 	};
 
 	saveScore(id, newScore) {
