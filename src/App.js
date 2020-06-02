@@ -58,6 +58,7 @@ class App extends Component {
 		this.calculateSinglesScore = this.calculateSinglesScore.bind(this);
 		this.saveScore = this.saveScore.bind(this);
 		this.resetDiceAndRoll = this.resetDiceAndRoll.bind(this);
+		this.calculateMultiKind = this.calculateMultiKind.bind(this);
 	}
 
 	handleStart(event) {
@@ -127,6 +128,7 @@ class App extends Component {
 		//console.log(selectedDie);
 	}
 
+	// All scoring for ones, twos, threes, fours, fives, and sixes
 	calculateSinglesScore = (event, targetValue, id) => {
 		event.preventDefault();
 		console.log(targetValue);
@@ -142,6 +144,64 @@ class App extends Component {
 		this.saveScore(id, newScore);
 		this.resetDiceAndRoll();
 	};
+
+	// ALL calucuate scoring functions need to take in id and pass id to saveScore with the newScore to save in the scoresheet
+
+	// need three of a kind --> sum of all dice if true
+	calculateMultiKind = (event, id) => {
+		event.preventDefault();
+		console.log('multipleKind');
+		let newScore = 0;
+		let maxCount = 0;
+		let currentCount = 0;
+		let diceArray = this.state.diceSet;
+		for (let i = 0; i < diceArray.length; i++) {
+			for (let j = i; j < diceArray.length; j++) {
+				if (diceArray[i].value === diceArray[j].value) {
+					currentCount++;
+				}
+				if (currentCount > maxCount) {
+					maxCount = currentCount;
+				}
+			}
+			currentCount = 0;
+		}
+
+		// check for yahtzee
+		if (maxCount === 5 && id === 'Yahtzee') {
+			newScore = 50;
+		}
+		//check for three of a Kind and higher
+		else if (maxCount >= 4 && id === 'Four Of A Kind') {
+			this.state.diceSet.forEach((element) => {
+				return (newScore += element.value);
+			});
+		} else if (maxCount >= 3) {
+			this.state.diceSet.forEach((element) => {
+				return (newScore += element.value);
+			});
+		}
+		console.log(newScore);
+		//save score with id and newScore and then reset dice
+		this.saveScore(id, newScore);
+		this.resetDiceAndRoll();
+	};
+
+	// need four of a kind --> sum of all dice if true
+
+	// need full house --> three of a kind and pair (25 points)
+
+	// need small straight --> 4 numbers in a row (30 points)
+
+	// need large straight --> 5 numbers in a row (40 points)
+
+	// need chance -->  sum of all dice
+
+	// need yahtzee --> five of a kind (50 points)  {further logic needed for multiple yahtzees}
+
+	// need calculate all singles score function for bonus of 35 points if true (or keep it as a running total that is not shown just hidden in state?)
+
+	// need calcualte all other scores function
 
 	saveScore(id, newScore) {
 		const selectedScore = this.state.scoresheet.findIndex(
@@ -186,7 +246,8 @@ class App extends Component {
 					<h1 className="center-text">Scorecard 2.0</h1>
 					<ScoreSheet
 						scoresheet={this.state.scoresheet}
-						handleScore={this.calculateSinglesScore}
+						//handleScore={this.calculateSinglesScore}
+						handleScore={this.calculateMultiKind}
 					/>
 				</div>
 			</div>
@@ -210,8 +271,11 @@ class Cell extends Component {
 
 	handleScore(event) {
 		event.preventDefault();
+		// singles
+		//this.props.handleScore(event, this.props.targetValue, this.props.id);
 
-		this.props.handleScore(event, this.props.targetValue, this.props.id);
+		//multiKind
+		this.props.handleScore(event, this.props.id);
 	}
 
 	render() {
