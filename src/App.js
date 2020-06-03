@@ -66,6 +66,7 @@ class App extends Component {
 		this.calculateSinglesScore = this.calculateSinglesScore.bind(this);
 		this.calculateMultiKind = this.calculateMultiKind.bind(this);
 		this.calculateStraights = this.calculateStraights.bind(this);
+		this.caluclateChance = this.caluclateChance.bind(this);
 		this.saveScoreSingles = this.saveScoreSingles.bind(this);
 		this.saveScoreMulti = this.saveScoreMulti.bind(this);
 		this.saveScoreStraights = this.saveScoreStraights.bind(this);
@@ -156,8 +157,6 @@ class App extends Component {
 		this.resetDiceAndRoll();
 	};
 
-	// ALL calucuate scoring functions need to take in id and pass id to saveScore with the newScore to save in the scoresheet
-
 	// three of a kind --> sum of all dice if true
 	// four of a kind --> sum of all dice if true
 	// yahtzee --> five of a kind (50 points)  {further logic needed for multiple yahtzees}
@@ -197,6 +196,9 @@ class App extends Component {
 			this.state.diceSet.forEach((element) => {
 				return (newScore += element.value);
 			});
+			if (id === 'Four Of A Kind') {
+				newScore = 0;
+			}
 		}
 		// if no conditions are met, the score stays zero
 		console.log(newScore);
@@ -223,8 +225,17 @@ class App extends Component {
 		this.resetDiceAndRoll();
 	};
 
-	// ---------------STILL NEEDED -----------------
-	// NEED chance -->  sum of all dice
+	//chance -->  sum of all dice
+	caluclateChance = (event, id) => {
+		event.preventDefault();
+		console.log('chance');
+		let newScore = 0;
+		this.state.diceSet.forEach((element) => {
+			return (newScore += element.value);
+		});
+		this.saveScoreChance(id, newScore);
+		this.resetDiceAndRoll();
+	};
 
 	// need calculate all singles score function for bonus of 35 points if true (or keep it as a running total that is not shown just hidden in state?)
 	// need calcualte all other scores function
@@ -243,6 +254,24 @@ class App extends Component {
 			};
 			this.setState({
 				scoresheet: changedScore,
+			});
+		}
+	}
+
+	saveScoreChance(id, newScore) {
+		const selectedScore = this.state.chanceSheet.findIndex(
+			(item) => item.id === id
+		);
+
+		let changedScore = [...this.state.chanceSheet];
+		if (changedScore[selectedScore].scored === false) {
+			changedScore[selectedScore] = {
+				...changedScore[selectedScore],
+				score: newScore,
+				scored: true,
+			};
+			this.setState({
+				chanceSheet: changedScore,
 			});
 		}
 	}
@@ -329,6 +358,10 @@ class App extends Component {
 							scoresheet={this.state.straightSheet}
 							handleScore={this.calculateStraights}
 						/>
+						<ChanceScore
+							scoresheet={this.state.chanceSheet}
+							handleScore={this.caluclateChance}
+						/>
 					</div>
 				</div>
 			</div>
@@ -360,6 +393,14 @@ const StraightScores = (props) => (
 	</div>
 );
 
+const ChanceScore = (props) => (
+	<div>
+		{props.scoresheet.map((el) => (
+			<Cell key={el.id} {...el} handleScore={props.handleScore} />
+		))}
+	</div>
+);
+
 class Cell extends Component {
 	constructor(props) {
 		super(props);
@@ -381,6 +422,8 @@ class Cell extends Component {
 			this.props.id === 'Large Straight'
 		) {
 			//straights
+			this.props.handleScore(event, this.props.id);
+		} else if (this.props.id === 'Chance') {
 			this.props.handleScore(event, this.props.id);
 		} else {
 			//Singles
