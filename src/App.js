@@ -42,28 +42,34 @@ class App extends Component {
 				{ id: 'Fours', score: 0, targetValue: 4, scored: false },
 				{ id: 'Fives', score: 0, targetValue: 5, scored: false },
 				{ id: 'Sixes', score: 0, targetValue: 6, scored: false },
+			],
+			straightSheet: [
+				{ id: 'Small Straight', score: 0, scored: false },
+				{ id: 'Large Straight', score: 0, scored: false },
+			],
+			multiSheet: [
 				{ id: 'Three Of A Kind', score: 0, scored: false },
 				{ id: 'Four Of A Kind', score: 0, scored: false },
 				{ id: 'Full House', score: 0, scored: false },
-				{ id: 'Small Straight', score: 0, scored: false },
-				{ id: 'Large Straight', score: 0, scored: false },
 				{ id: 'Yahtzee', score: 0, scored: false },
-				{ id: 'Upper Score', score: 0, scored: false },
-				{ id: 'Total', score: 0, scored: false },
 			],
+			chanceSheet: [{ id: 'Chance', score: 0, scored: false }],
 			totalBonus: [
-				{ id: 'Upper Score', score: 0, scored: false },
-				{ id: 'Bonus for Upper', score: 0, scored: false },
-				{ id: 'Total', score: 0, scored: false },
+				{ id: 'Upper Score', score: 0 },
+				{ id: 'Bonus for Upper', score: 0 },
+				{ id: 'Total', score: 0 },
 			],
 		};
 		this.handleStart = this.handleStart.bind(this);
 		this.handleRoll = this.handleRoll.bind(this);
 		this.handleDieClick = this.handleDieClick.bind(this);
 		this.calculateSinglesScore = this.calculateSinglesScore.bind(this);
-		this.saveScore = this.saveScore.bind(this);
-		this.resetDiceAndRoll = this.resetDiceAndRoll.bind(this);
 		this.calculateMultiKind = this.calculateMultiKind.bind(this);
+		this.calculateStraights = this.calculateStraights.bind(this);
+		this.saveScoreSingles = this.saveScoreSingles.bind(this);
+		this.saveScoreMulti = this.saveScoreMulti.bind(this);
+		this.saveScoreStraights = this.saveScoreStraights.bind(this);
+		this.resetDiceAndRoll = this.resetDiceAndRoll.bind(this);
 	}
 
 	handleStart(event) {
@@ -146,15 +152,17 @@ class App extends Component {
 		});
 		console.log(newScore);
 		// send newScore and html id to a different function to update table
-		this.saveScore(id, newScore);
+		this.saveScoreSingles(id, newScore);
 		this.resetDiceAndRoll();
 	};
 
 	// ALL calucuate scoring functions need to take in id and pass id to saveScore with the newScore to save in the scoresheet
 
-	// need three of a kind --> sum of all dice if true
-	// need four of a kind --> sum of all dice if true
-	// need yahtzee --> five of a kind (50 points)  {further logic needed for multiple yahtzees}
+	// three of a kind --> sum of all dice if true
+	// four of a kind --> sum of all dice if true
+	// yahtzee --> five of a kind (50 points)  {further logic needed for multiple yahtzees}
+	// ---------------STILL NEEDED -----------------
+	// NEED TO INCLUDE FULL HOUSE LOGIC SOMEHOW --> 25 points
 	calculateMultiKind = (event, id) => {
 		event.preventDefault();
 		console.log('multipleKind');
@@ -193,23 +201,35 @@ class App extends Component {
 		// if no conditions are met, the score stays zero
 		console.log(newScore);
 		//save score with id and newScore and then reset dice
-		this.saveScore(id, newScore);
+		this.saveScoreMulti(id, newScore);
 		this.resetDiceAndRoll();
 	};
 
-	// need full house --> three of a kind and pair (25 points)
-
 	// need small straight --> 4 numbers in a row (30 points)
-
 	// need large straight --> 5 numbers in a row (40 points)
+	calculateStraights = (event, id) => {
+		event.preventDefault();
+		console.log('straights');
+		let newScore = 0;
+		let diceArray = this.state.diceSet;
 
-	// need chance -->  sum of all dice
+		// try and sort the diceSet based on values
+		const sorted = diceArray.sort((a, b) => a - b);
+		console.log(sorted);
+
+		// logic to determine small vs large straight
+
+		this.saveScoreStraights(id, newScore);
+		this.resetDiceAndRoll();
+	};
+
+	// ---------------STILL NEEDED -----------------
+	// NEED chance -->  sum of all dice
 
 	// need calculate all singles score function for bonus of 35 points if true (or keep it as a running total that is not shown just hidden in state?)
-
 	// need calcualte all other scores function
 
-	saveScore(id, newScore) {
+	saveScoreSingles(id, newScore) {
 		const selectedScore = this.state.scoresheet.findIndex(
 			(item) => item.id === id
 		);
@@ -227,10 +247,49 @@ class App extends Component {
 		}
 	}
 
+	saveScoreMulti(id, newScore) {
+		const selectedScore = this.state.multiSheet.findIndex(
+			(item) => item.id === id
+		);
+
+		let changedScore = [...this.state.multiSheet];
+		if (changedScore[selectedScore].scored === false) {
+			changedScore[selectedScore] = {
+				...changedScore[selectedScore],
+				score: newScore,
+				scored: true,
+			};
+			this.setState({
+				multiSheet: changedScore,
+			});
+		}
+	}
+
+	saveScoreStraights(id, newScore) {
+		const selectedScore = this.state.straightSheet.findIndex(
+			(item) => item.id === id
+		);
+
+		let changedScore = [...this.state.straightSheet];
+		if (changedScore[selectedScore].scored === false) {
+			changedScore[selectedScore] = {
+				...changedScore[selectedScore],
+				score: newScore,
+				scored: true,
+			};
+			this.setState({
+				straightSheet: changedScore,
+			});
+		}
+	}
+
 	render() {
 		return (
 			<div className="App">
 				<h1>Welcome to Yahtzee!</h1>
+				<h3>
+					A classic remake of the dice game without the hassle of real dice!
+				</h3>
 				<button
 					className={this.state.start ? 'hidden' : 'btn'}
 					onClick={this.handleStart}
@@ -254,10 +313,21 @@ class App extends Component {
 					</div>
 					<div className="scorecard">
 						<h1 className="center-text">Scorecard 2.0</h1>
-						<ScoreSheet
+						<h3 className="center-text">
+							By the end of Roll 3, select the scoring area to score, no repeat
+							selections allowed
+						</h3>
+						<SingleScores
 							scoresheet={this.state.scoresheet}
-							//handleScore={this.calculateSinglesScore}
+							handleScore={this.calculateSinglesScore}
+						/>
+						<MultiScores
+							scoresheet={this.state.multiSheet}
 							handleScore={this.calculateMultiKind}
+						/>
+						<StraightScores
+							scoresheet={this.state.straightSheet}
+							handleScore={this.calculateStraights}
 						/>
 					</div>
 				</div>
@@ -266,7 +336,23 @@ class App extends Component {
 	}
 }
 
-const ScoreSheet = (props) => (
+const SingleScores = (props) => (
+	<div>
+		{props.scoresheet.map((el) => (
+			<Cell key={el.id} {...el} handleScore={props.handleScore} />
+		))}
+	</div>
+);
+
+const MultiScores = (props) => (
+	<div>
+		{props.scoresheet.map((el) => (
+			<Cell key={el.id} {...el} handleScore={props.handleScore} />
+		))}
+	</div>
+);
+
+const StraightScores = (props) => (
 	<div>
 		{props.scoresheet.map((el) => (
 			<Cell key={el.id} {...el} handleScore={props.handleScore} />
@@ -282,11 +368,24 @@ class Cell extends Component {
 
 	handleScore(event) {
 		event.preventDefault();
-		// singles
-		//this.props.handleScore(event, this.props.targetValue, this.props.id);
 
-		//multiKind
-		this.props.handleScore(event, this.props.id);
+		if (
+			this.props.id === 'Three Of A Kind' ||
+			this.props.id === 'Four Of A Kind' ||
+			this.props.id === 'Yahtzee'
+		) {
+			//multiKind
+			this.props.handleScore(event, this.props.id);
+		} else if (
+			this.props.id === 'Small Straight' ||
+			this.props.id === 'Large Straight'
+		) {
+			//straights
+			this.props.handleScore(event, this.props.id);
+		} else {
+			//Singles
+			this.props.handleScore(event, this.props.targetValue, this.props.id);
+		}
 	}
 
 	render() {
