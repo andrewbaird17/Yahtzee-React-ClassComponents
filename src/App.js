@@ -84,7 +84,7 @@ class App extends Component {
 
 	changeValue(die) {
 		// changle value based on id and hold status
-		console.log(die);
+		//console.log(die);
 		if (die.hold !== true) {
 			die.value = Math.floor(Math.random() * 6) + 1;
 		}
@@ -114,7 +114,7 @@ class App extends Component {
 				return this.changeValue(die);
 			});
 		}
-		console.log(this.state.diceSet);
+		//console.log(this.state.diceSet);
 	}
 
 	resetDiceAndRoll() {
@@ -166,7 +166,8 @@ class App extends Component {
 		event.preventDefault();
 		console.log('multipleKind');
 		let newScore = 0;
-		let maxCount = 0;
+		let secondMaxCount = 0;
+		let maxCount = 1;
 		let currentCount = 0;
 		let diceArray = this.state.diceSet;
 		// go through diceset and see what the highest count of a single number is
@@ -176,7 +177,10 @@ class App extends Component {
 					currentCount++;
 				}
 				if (currentCount > maxCount) {
+					secondMaxCount = maxCount;
 					maxCount = currentCount;
+				} else if (currentCount > secondMaxCount) {
+					secondMaxCount = currentCount;
 				}
 			}
 			currentCount = 0;
@@ -192,10 +196,13 @@ class App extends Component {
 				return (newScore += element.value);
 			});
 			//check for three of a kind
+		} else if (maxCount === 3 && secondMaxCount === 2) {
+			newScore = 25;
 		} else if (maxCount >= 3) {
 			this.state.diceSet.forEach((element) => {
 				return (newScore += element.value);
 			});
+			//if four of a kind is selected but doesn't really have four of a kind
 			if (id === 'Four Of A Kind') {
 				newScore = 0;
 			}
@@ -236,9 +243,6 @@ class App extends Component {
 		this.saveScoreChance(id, newScore);
 		this.resetDiceAndRoll();
 	};
-
-	// need calculate all singles score function for bonus of 35 points if true (or keep it as a running total that is not shown just hidden in state?)
-	// need calcualte all other scores function
 
 	saveScoreSingles(id, newScore) {
 		const selectedScore = this.state.scoresheet.findIndex(
@@ -413,6 +417,7 @@ class Cell extends Component {
 		if (
 			this.props.id === 'Three Of A Kind' ||
 			this.props.id === 'Four Of A Kind' ||
+			this.props.id === 'Full House' ||
 			this.props.id === 'Yahtzee'
 		) {
 			//multiKind
