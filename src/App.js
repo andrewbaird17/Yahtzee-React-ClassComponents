@@ -51,6 +51,11 @@ class App extends Component {
 				{ id: 'Upper Score', score: 0, scored: false },
 				{ id: 'Total', score: 0, scored: false },
 			],
+			totalBonus: [
+				{ id: 'Upper Score', score: 0, scored: false },
+				{ id: 'Bonus for Upper', score: 0, scored: false },
+				{ id: 'Total', score: 0, scored: false },
+			],
 		};
 		this.handleStart = this.handleStart.bind(this);
 		this.handleRoll = this.handleRoll.bind(this);
@@ -92,14 +97,14 @@ class App extends Component {
 			// need to choose score on scorecard if reach this point, should not be able to roll again until a scoring area is chosen
 
 			this.state.diceSet.map((die) => {
-				this.resetDiceSetHold(die);
+				return this.resetDiceSetHold(die);
 			});
 		} else {
 			this.setState({
 				roll: this.state.roll + 1,
 			});
 			this.state.diceSet.map((die) => {
-				this.changeValue(die);
+				return this.changeValue(die);
 			});
 		}
 		console.log(this.state.diceSet);
@@ -110,7 +115,7 @@ class App extends Component {
 			roll: 0,
 		});
 		this.state.diceSet.map((die) => {
-			this.resetDiceSetHold(die);
+			return this.resetDiceSetHold(die);
 		});
 	}
 
@@ -148,6 +153,8 @@ class App extends Component {
 	// ALL calucuate scoring functions need to take in id and pass id to saveScore with the newScore to save in the scoresheet
 
 	// need three of a kind --> sum of all dice if true
+	// need four of a kind --> sum of all dice if true
+	// need yahtzee --> five of a kind (50 points)  {further logic needed for multiple yahtzees}
 	calculateMultiKind = (event, id) => {
 		event.preventDefault();
 		console.log('multipleKind');
@@ -155,6 +162,7 @@ class App extends Component {
 		let maxCount = 0;
 		let currentCount = 0;
 		let diceArray = this.state.diceSet;
+		// go through diceset and see what the highest count of a single number is
 		for (let i = 0; i < diceArray.length; i++) {
 			for (let j = i; j < diceArray.length; j++) {
 				if (diceArray[i].value === diceArray[j].value) {
@@ -171,23 +179,23 @@ class App extends Component {
 		if (maxCount === 5 && id === 'Yahtzee') {
 			newScore = 50;
 		}
-		//check for three of a Kind and higher
+		//check for if four of a kind was clicked
 		else if (maxCount >= 4 && id === 'Four Of A Kind') {
 			this.state.diceSet.forEach((element) => {
 				return (newScore += element.value);
 			});
+			//check for three of a kind
 		} else if (maxCount >= 3) {
 			this.state.diceSet.forEach((element) => {
 				return (newScore += element.value);
 			});
 		}
+		// if no conditions are met, the score stays zero
 		console.log(newScore);
 		//save score with id and newScore and then reset dice
 		this.saveScore(id, newScore);
 		this.resetDiceAndRoll();
 	};
-
-	// need four of a kind --> sum of all dice if true
 
 	// need full house --> three of a kind and pair (25 points)
 
@@ -196,8 +204,6 @@ class App extends Component {
 	// need large straight --> 5 numbers in a row (40 points)
 
 	// need chance -->  sum of all dice
-
-	// need yahtzee --> five of a kind (50 points)  {further logic needed for multiple yahtzees}
 
 	// need calculate all singles score function for bonus of 35 points if true (or keep it as a running total that is not shown just hidden in state?)
 
@@ -225,30 +231,35 @@ class App extends Component {
 		return (
 			<div className="App">
 				<h1>Welcome to Yahtzee!</h1>
-				<button className="btn" onClick={this.handleStart}>
+				<button
+					className={this.state.start ? 'hidden' : 'btn'}
+					onClick={this.handleStart}
+				>
 					Start Game
 				</button>
-				<div className="row">
-					<div className="main">
-						<DiceSet
-							dice={this.state.diceSet}
-							handleClick={this.handleDieClick}
-						/>
-						<div className="roll-again">
-							<h2>Current Roll: {this.state.roll} </h2>
-							<button className="roll-button" onClick={this.handleRoll}>
-								Roll Again
-							</button>
+				<div className={this.state.start ? '' : 'hidden'}>
+					<div className="row">
+						<div className="main">
+							<DiceSet
+								dice={this.state.diceSet}
+								handleClick={this.handleDieClick}
+							/>
+							<div className="roll-again">
+								<h2>Current Roll: {this.state.roll} </h2>
+								<button className="roll-button" onClick={this.handleRoll}>
+									Roll Again
+								</button>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div className="scorecard">
-					<h1 className="center-text">Scorecard 2.0</h1>
-					<ScoreSheet
-						scoresheet={this.state.scoresheet}
-						//handleScore={this.calculateSinglesScore}
-						handleScore={this.calculateMultiKind}
-					/>
+					<div className="scorecard">
+						<h1 className="center-text">Scorecard 2.0</h1>
+						<ScoreSheet
+							scoresheet={this.state.scoresheet}
+							//handleScore={this.calculateSinglesScore}
+							handleScore={this.calculateMultiKind}
+						/>
+					</div>
 				</div>
 			</div>
 		);
