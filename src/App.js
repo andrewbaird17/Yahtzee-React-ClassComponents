@@ -159,9 +159,8 @@ class App extends Component {
 
 	// three of a kind --> sum of all dice if true
 	// four of a kind --> sum of all dice if true
+	// full house --> 25 points if true
 	// yahtzee --> five of a kind (50 points)  {further logic needed for multiple yahtzees}
-	// ---------------STILL NEEDED -----------------
-	// NEED TO INCLUDE FULL HOUSE LOGIC SOMEHOW --> 25 points
 	calculateMultiKind = (event, id) => {
 		event.preventDefault();
 		console.log('multipleKind');
@@ -214,6 +213,11 @@ class App extends Component {
 		this.resetDiceAndRoll();
 	};
 
+	// ---------------STILL NEEDED -----------------
+	// Bonus check function of singles scoresheet --> 35 points if true
+	// Total point to sum up all of the scoresheets
+
+	// ---------------STILL NEEDED -----------------
 	// need small straight --> 4 numbers in a row (30 points)
 	// need large straight --> 5 numbers in a row (40 points)
 	calculateStraights = (event, id) => {
@@ -366,6 +370,10 @@ class App extends Component {
 							scoresheet={this.state.chanceSheet}
 							handleScore={this.caluclateChance}
 						/>
+						<div>
+							<h2>Total</h2>
+							<h3>{this.state.totalBonus[2].score}</h3>
+						</div>
 					</div>
 				</div>
 			</div>
