@@ -225,13 +225,34 @@ class App extends Component {
 		console.log('straights');
 		let newScore = 0;
 		let diceArray = this.state.diceSet;
+		let straightCount = 1;
+		let maxStraight = 1;
 
 		// try and sort the diceSet based on values
-		const sorted = diceArray.sort((a, b) => a - b);
+		const sorted = diceArray.sort((a, b) => a.value - b.value);
 		console.log(sorted);
 
-		// logic to determine small vs large straight
+		const noDuplicates = [
+			...new Map(sorted.map((item) => [item['value'], item])).values(),
+		];
+		console.log(noDuplicates);
 
+		// logic to determine small vs large straight
+		for (let i = 1; i < noDuplicates.length; i++) {
+			if (noDuplicates[i - 1].value === noDuplicates[i].value - 1) {
+				straightCount++;
+			}
+		}
+		if (straightCount > maxStraight) {
+			maxStraight = straightCount;
+		}
+		console.log(maxStraight);
+
+		if (maxStraight === 5) {
+			newScore = 40;
+		} else if (maxStraight === 4) {
+			newScore = 30;
+		}
 		this.saveScoreStraights(id, newScore);
 		this.resetDiceAndRoll();
 	};
@@ -371,7 +392,7 @@ class App extends Component {
 							handleScore={this.caluclateChance}
 						/>
 						<div>
-							<h2>Total</h2>
+							<h2>Total Points</h2>
 							<h3>{this.state.totalBonus[2].score}</h3>
 						</div>
 					</div>
