@@ -67,9 +67,11 @@ class App extends Component {
 		this.calculateMultiKind = this.calculateMultiKind.bind(this);
 		this.calculateStraights = this.calculateStraights.bind(this);
 		this.caluclateChance = this.caluclateChance.bind(this);
+		this.calculateTotal = this.calculateTotal.bind(this);
 		this.saveScoreSingles = this.saveScoreSingles.bind(this);
 		this.saveScoreMulti = this.saveScoreMulti.bind(this);
 		this.saveScoreStraights = this.saveScoreStraights.bind(this);
+		this.saveTotalScore = this.saveTotalScore.bind(this);
 		this.resetDiceAndRoll = this.resetDiceAndRoll.bind(this);
 	}
 
@@ -140,6 +142,30 @@ class App extends Component {
 		//console.log(selectedDie);
 	}
 
+	// ---------------STILL NEEDED -----------------
+	// Bonus check function of singles scoresheet --> 35 points if true
+	// Total point to sum up all of the scoresheets
+	calculateTotal() {
+		let runningTotal = 0;
+		//scoresheet, straightSheet, multiSheet, chanceSheet, and bonus within totalBonus
+		this.state.scoresheet.forEach((element) => {
+			runningTotal += element.score;
+		});
+		this.state.straightSheet.forEach((element) => {
+			runningTotal += element.score;
+		});
+		this.state.multiSheet.forEach((element) => {
+			runningTotal += element.score;
+		});
+		this.state.chanceSheet.forEach((element) => {
+			runningTotal += element.score;
+		});
+		let bonus = this.state.totalBonus[1];
+		runningTotal += bonus.score;
+		console.log(runningTotal);
+		this.saveTotalScore(runningTotal);
+	}
+
 	// All scoring for ones, twos, threes, fours, fives, and sixes
 	calculateSinglesScore = (event, targetValue, id) => {
 		event.preventDefault();
@@ -155,6 +181,7 @@ class App extends Component {
 		// send newScore and html id to a different function to update table
 		this.saveScoreSingles(id, newScore);
 		this.resetDiceAndRoll();
+		this.calculateTotal();
 	};
 
 	// three of a kind --> sum of all dice if true
@@ -198,11 +225,13 @@ class App extends Component {
 		} else if (maxCount === 3 && secondMaxCount === 2) {
 			newScore = 25;
 		} else if (maxCount >= 3) {
-			this.state.diceSet.forEach((element) => {
-				return (newScore += element.value);
-			});
-			//if four of a kind is selected but doesn't really have four of a kind
-			if (id === 'Four Of A Kind') {
+			if (id === 'Three Of A Kind') {
+				this.state.diceSet.forEach((element) => {
+					return (newScore += element.value);
+				});
+			}
+			//if four of a kind or yahtzee is selected but previous conditions are not met
+			else {
 				newScore = 0;
 			}
 		}
@@ -211,15 +240,11 @@ class App extends Component {
 		//save score with id and newScore and then reset dice
 		this.saveScoreMulti(id, newScore);
 		this.resetDiceAndRoll();
+		this.calculateTotal();
 	};
 
-	// ---------------STILL NEEDED -----------------
-	// Bonus check function of singles scoresheet --> 35 points if true
-	// Total point to sum up all of the scoresheets
-
-	// ---------------STILL NEEDED -----------------
-	// need small straight --> 4 numbers in a row (30 points)
-	// need large straight --> 5 numbers in a row (40 points)
+	// small straight --> 4 numbers in a row (30 points)
+	// large straight --> 5 numbers in a row (40 points)
 	calculateStraights = (event, id) => {
 		event.preventDefault();
 		console.log('straights');
@@ -248,13 +273,16 @@ class App extends Component {
 		}
 		console.log(maxStraight);
 
-		if (maxStraight === 5) {
+		if (maxStraight === 5 && id === 'Large Straight') {
 			newScore = 40;
-		} else if (maxStraight === 4) {
+		} else if (maxStraight === 4 && id === 'Small Straight') {
 			newScore = 30;
+		} else {
+			newScore = 0;
 		}
 		this.saveScoreStraights(id, newScore);
 		this.resetDiceAndRoll();
+		this.calculateTotal();
 	};
 
 	//chance -->  sum of all dice
@@ -267,7 +295,22 @@ class App extends Component {
 		});
 		this.saveScoreChance(id, newScore);
 		this.resetDiceAndRoll();
+		this.calculateTotal();
 	};
+
+	saveTotalScore(newScore) {
+		const totalScore = this.state.totalBonus.findIndex(
+			(item) => item.id === 'Total'
+		);
+		let changedTotal = [...this.state.totalBonus];
+		changedTotal[totalScore] = {
+			...changedTotal[totalScore],
+			score: newScore,
+		};
+		this.setState({
+			totalBonus: changedTotal,
+		});
+	}
 
 	saveScoreSingles(id, newScore) {
 		const selectedScore = this.state.scoresheet.findIndex(
