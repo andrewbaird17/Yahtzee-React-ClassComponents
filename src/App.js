@@ -61,6 +61,7 @@ class App extends Component {
 			],
 		};
 		this.handleStart = this.handleStart.bind(this);
+		this.handleEnd = this.handleEnd.bind(this);
 		this.handleRoll = this.handleRoll.bind(this);
 		this.handleDieClick = this.handleDieClick.bind(this);
 		this.calculateSinglesScore = this.calculateSinglesScore.bind(this);
@@ -84,6 +85,44 @@ class App extends Component {
 		this.setState({
 			start: !this.state.start,
 		});
+	}
+
+	handleEnd(event) {
+		event.preventDefault();
+		let allScored = 0;
+		this.state.scoresheet.forEach((element) => {
+			if (element.scored === true) {
+				allScored++;
+			}
+		});
+		this.state.straightSheet.forEach((element) => {
+			if (element.scored === true) {
+				allScored++;
+			}
+		});
+		this.state.multiSheet.forEach((element) => {
+			if (element.scored === true) {
+				allScored++;
+			}
+		});
+		this.state.chanceSheet.forEach((element) => {
+			if (element.scored === true) {
+				allScored++;
+			}
+		});
+		let bonus = this.state.totalBonus[1];
+		if (bonus.scored === true) {
+			allScored++;
+		}
+		if (allScored === 13) {
+			//do a popup to display total score
+			alert('Total Score:\n' + this.state.totalBonus[2].score);
+			//Ask to play again
+			if (window.confirm('Play Again?') === true) {
+				//reset page
+				window.location.reload(true);
+			}
+		}
 	}
 
 	changeValue(die) {
@@ -445,6 +484,9 @@ class App extends Component {
 							</div>
 						</div>
 					</div>
+					<button className="roll-button" onClick={this.handleEnd}>
+						Check Final Score?
+					</button>
 					<div className="scorecard">
 						<h1 className="center-text">Scorecard 2.0</h1>
 						<h3 className="center-text">
