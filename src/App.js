@@ -68,9 +68,11 @@ class App extends Component {
 		this.calculateStraights = this.calculateStraights.bind(this);
 		this.caluclateChance = this.caluclateChance.bind(this);
 		this.calculateTotal = this.calculateTotal.bind(this);
+		this.calculateBonus = this.calculateBonus.bind(this);
 		this.saveScoreSingles = this.saveScoreSingles.bind(this);
 		this.saveScoreMulti = this.saveScoreMulti.bind(this);
 		this.saveScoreStraights = this.saveScoreStraights.bind(this);
+		this.saveBonusScore = this.saveBonusScore.bind(this);
 		this.saveTotalScore = this.saveTotalScore.bind(this);
 		this.resetDiceAndRoll = this.resetDiceAndRoll.bind(this);
 	}
@@ -142,8 +144,19 @@ class App extends Component {
 		//console.log(selectedDie);
 	}
 
-	// ---------------STILL NEEDED -----------------
 	// Bonus check function of singles scoresheet --> 35 points if true
+	calculateBonus() {
+		let runningTotal = 0;
+		let bonus = 0;
+		this.state.scoresheet.forEach((element) => {
+			runningTotal += element.score;
+		});
+		if (runningTotal >= 63) {
+			bonus = 35;
+		}
+		this.saveBonusScore(bonus);
+	}
+
 	// Total point to sum up all of the scoresheets
 	calculateTotal() {
 		let runningTotal = 0;
@@ -162,7 +175,7 @@ class App extends Component {
 		});
 		let bonus = this.state.totalBonus[1];
 		runningTotal += bonus.score;
-		console.log(runningTotal);
+		//console.log(runningTotal);
 		this.saveTotalScore(runningTotal);
 	}
 
@@ -202,7 +215,7 @@ class App extends Component {
 				if (diceArray[i].value === diceArray[j].value) {
 					currentCount++;
 				}
-				if (currentCount > maxCount) {
+				if (currentCount >= maxCount) {
 					secondMaxCount = maxCount;
 					maxCount = currentCount;
 				} else if (currentCount > secondMaxCount) {
@@ -232,6 +245,8 @@ class App extends Component {
 			}
 			//if four of a kind or yahtzee is selected but previous conditions are not met
 			else {
+				console.log(maxCount);
+				console.log(secondMaxCount);
 				newScore = 0;
 			}
 		}
@@ -275,13 +290,14 @@ class App extends Component {
 
 		if (maxStraight === 5 && id === 'Large Straight') {
 			newScore = 40;
-		} else if (maxStraight === 4 && id === 'Small Straight') {
+		} else if (maxStraight >= 4 && id === 'Small Straight') {
 			newScore = 30;
 		} else {
 			newScore = 0;
 		}
 		this.saveScoreStraights(id, newScore);
 		this.resetDiceAndRoll();
+		this.calculateBonus();
 		this.calculateTotal();
 	};
 
@@ -305,6 +321,20 @@ class App extends Component {
 		let changedTotal = [...this.state.totalBonus];
 		changedTotal[totalScore] = {
 			...changedTotal[totalScore],
+			score: newScore,
+		};
+		this.setState({
+			totalBonus: changedTotal,
+		});
+	}
+
+	saveBonusScore(newScore) {
+		const bonusScore = this.state.totalBonus.findIndex(
+			(item) => item.id === 'Bonus for Upper'
+		);
+		let changedTotal = [...this.state.totalBonus];
+		changedTotal[bonusScore] = {
+			...changedTotal[bonusScore],
 			score: newScore,
 		};
 		this.setState({
