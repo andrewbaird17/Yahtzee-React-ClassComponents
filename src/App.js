@@ -153,6 +153,7 @@ class App extends Component {
 		});
 		if (runningTotal >= 63) {
 			bonus = 35;
+			console.log('Bonus hit!');
 		}
 		this.saveBonusScore(bonus);
 	}
@@ -194,6 +195,7 @@ class App extends Component {
 		// send newScore and html id to a different function to update table
 		this.saveScoreSingles(id, newScore);
 		this.resetDiceAndRoll();
+		this.calculateBonus();
 		this.calculateTotal();
 	};
 
@@ -206,7 +208,7 @@ class App extends Component {
 		console.log('multipleKind');
 		let newScore = 0;
 		let secondMaxCount = 0;
-		let maxCount = 1;
+		let maxCount = 0;
 		let currentCount = 0;
 		let diceArray = this.state.diceSet;
 		// go through diceset and see what the highest count of a single number is
@@ -214,12 +216,12 @@ class App extends Component {
 			for (let j = i; j < diceArray.length; j++) {
 				if (diceArray[i].value === diceArray[j].value) {
 					currentCount++;
-				}
-				if (currentCount >= maxCount) {
-					secondMaxCount = maxCount;
-					maxCount = currentCount;
-				} else if (currentCount > secondMaxCount) {
-					secondMaxCount = currentCount;
+					if (currentCount >= maxCount) {
+						secondMaxCount = maxCount;
+						maxCount = currentCount;
+					} else if (currentCount > secondMaxCount) {
+						secondMaxCount = currentCount;
+					}
 				}
 			}
 			currentCount = 0;
@@ -235,13 +237,15 @@ class App extends Component {
 				return (newScore += element.value);
 			});
 			//check for three of a kind
-		} else if (maxCount === 3 && secondMaxCount === 2) {
-			newScore = 25;
 		} else if (maxCount >= 3) {
 			if (id === 'Three Of A Kind') {
 				this.state.diceSet.forEach((element) => {
 					return (newScore += element.value);
 				});
+			} else if (maxCount === 3 && secondMaxCount === 2) {
+				if (id === 'Full House') {
+					newScore = 25;
+				}
 			}
 			//if four of a kind or yahtzee is selected but previous conditions are not met
 			else {
@@ -297,7 +301,6 @@ class App extends Component {
 		}
 		this.saveScoreStraights(id, newScore);
 		this.resetDiceAndRoll();
-		this.calculateBonus();
 		this.calculateTotal();
 	};
 
