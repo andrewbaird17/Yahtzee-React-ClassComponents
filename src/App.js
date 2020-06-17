@@ -399,7 +399,10 @@ class App extends Component {
 			this.setState({
 				scoresheet: changedScore,
 			});
-		}
+		} else
+			alert(
+				'Item selected has already been scored. \nSelect another item to score.'
+			);
 	}
 
 	saveScoreChance(id, newScore) {
@@ -417,7 +420,10 @@ class App extends Component {
 			this.setState({
 				chanceSheet: changedScore,
 			});
-		}
+		} else
+			alert(
+				'Item selected has already been scored. \nSelect another item to score.'
+			);
 	}
 
 	saveScoreMulti(id, newScore) {
@@ -435,7 +441,10 @@ class App extends Component {
 			this.setState({
 				multiSheet: changedScore,
 			});
-		}
+		} else
+			alert(
+				'Item selected has already been scored. \nSelect another item to score.'
+			);
 	}
 
 	saveScoreStraights(id, newScore) {
@@ -453,7 +462,10 @@ class App extends Component {
 			this.setState({
 				straightSheet: changedScore,
 			});
-		}
+		} else
+			alert(
+				'Item selected has already been scored. \nSelect another item to score.'
+			);
 	}
 
 	render() {
